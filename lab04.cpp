@@ -23,9 +23,11 @@ using fVector = std::vector<float>;
 // statement is put into the function to mimic that.
 void deposit(int acc, fVector& account, double amt,
         std::unordered_map<int, std::unique_ptr<std::mutex>>& mutexes) {
-    std::lock_guard<std::mutex> lock(*mutexes[acc]);
-    account[acc] += amt;
-    // std::cout << "depo done" << std::endl;
+    if (true) {
+        std::lock_guard<std::mutex> lock(*mutexes[acc]);
+        account[acc] += amt;
+        // std::cout << "depo done" << std::endl;
+    }
     sleep(1);
 }
 
@@ -37,12 +39,13 @@ void deposit(int acc, fVector& account, double amt,
 // must be checked to make sure there are sufficient funds.
 void withdraw(int acc, fVector& account, double amt,
         std::unordered_map<int, std::unique_ptr<std::mutex>>& mutexes) {
-   
-    if (account[acc] >= amt) {
+    if (true) {
         std::scoped_lock<std::mutex> lock(*mutexes[acc]);
-        account[acc] -= amt;
-    } else {
-        std::cerr << "Insufficient funds to withdraw $" << amt << endl;
+        if (account[acc] >= amt) {
+            account[acc] -= amt;
+        } else {
+            std::cerr << "Insufficient funds to withdraw $" << amt << endl;
+        }
     }
     // std::cout << "with done" << std::endl;
     sleep(1);
@@ -56,13 +59,14 @@ void withdraw(int acc, fVector& account, double amt,
 // balance must be checked to make sure there are sufficient funds.
 void transfer(int from, int to, fVector& account, double amt,
      std::unordered_map<int, std::unique_ptr<std::mutex>>& mutexes) {
-    
-    if (account[from] >= amt) {
+    if (true) {
         std::scoped_lock lock(*mutexes[from], *mutexes[to]);
-        account[from] -= amt;
-        account[to] += amt;
-    } else {
-        std::cerr << "Insufficient funds to transfer $" << amt << endl;
+        if (account[from] >= amt) {
+            account[from] -= amt;
+            account[to] += amt;
+        } else {
+            std::cerr << "Insufficient funds to transfer $" << amt << endl;
+        }
     }
     // std::cout <</ "transf done" << std::endl;
     sleep(1);
